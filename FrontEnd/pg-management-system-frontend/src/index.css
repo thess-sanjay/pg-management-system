@@ -1,0 +1,3647 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+
+:root {
+  font-family: "DM Sans", sans-serif;
+
+  color: #e9edf3;
+  background: #0b0d10;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  --bg: #0b0d10;
+  --surface: #111419;
+  --surface-2: #15191f;
+  --surface-3: #1b2027;
+
+  --border: rgba(255, 255, 255, 0.07);
+
+  --text: #edf1f5;
+  --muted: #89919d;
+  --muted-2: #626a76;
+
+  --accent: #b7f34a;
+  --accent-dark: #8fc72c;
+
+  --danger: #ff7070;
+
+  --sidebar-width: 245px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at 80% 0%,
+      rgba(183, 243, 74, 0.045),
+      transparent 28%
+    ),
+    var(--bg);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 0;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+
+  width: var(--sidebar-width);
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 27px 15px 16px;
+
+  background: rgba(14, 17, 21, 0.92);
+
+  border-right: 1px solid var(--border);
+
+  backdrop-filter: blur(18px);
+
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  padding: 0 10px;
+  margin-bottom: 48px;
+}
+
+.brand-mark {
+  width: 35px;
+  height: 35px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 10px;
+
+  background: var(--accent);
+  color: #111;
+
+  font-family: Manrope, sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.brand h2 {
+  margin: 0;
+
+  font-family: Manrope, sans-serif;
+  font-size: 16px;
+  letter-spacing: -0.5px;
+}
+
+.brand span {
+  display: block;
+
+  margin-top: 2px;
+
+  color: var(--muted-2);
+
+  font-size: 10px;
+}
+
+
+.nav-label,
+.panel-kicker,
+.eyebrow {
+  display: block;
+
+  color: var(--muted-2);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 1.5px;
+}
+
+.nav-label {
+  padding: 0 11px;
+  margin-bottom: 9px;
+}
+
+.nav-item {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  height: 43px;
+
+  padding: 0 12px;
+  margin: 3px 0;
+
+  border-radius: 9px;
+
+  color: var(--muted);
+
+  text-decoration: none;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  transition: 180ms ease;
+
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.nav-item.active {
+  color: var(--text);
+  background: rgba(183, 243, 74, 0.09);
+}
+
+.nav-item.active::before {
+  content: "";
+
+  position: absolute;
+  left: -15px;
+
+  width: 3px;
+  height: 22px;
+
+  border-radius: 0 5px 5px 0;
+
+  background: var(--accent);
+}
+
+.nav-item.active svg {
+  color: var(--accent);
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+}
+
+.sidebar-status {
+  display: flex;
+  gap: 10px;
+
+  padding: 12px;
+
+  margin-bottom: 12px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  margin-top: 5px;
+
+  border-radius: 50%;
+
+  background: var(--accent);
+
+  box-shadow: 0 0 12px rgba(183, 243, 74, 0.6);
+}
+
+.sidebar-status strong,
+.sidebar-status small {
+  display: block;
+}
+
+.sidebar-status strong {
+  font-size: 11px;
+}
+
+.sidebar-status small {
+  margin-top: 3px;
+
+  color: var(--muted-2);
+  font-size: 9px;
+}
+
+.profile-mini {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 9px;
+
+  border-radius: 10px;
+
+  color: var(--muted);
+}
+
+.avatar {
+  width: 31px;
+  height: 31px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 9px;
+
+  background: #252b32;
+
+  color: #dce4eb;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-info strong,
+.profile-info small {
+  display: block;
+}
+
+.profile-info strong {
+  color: var(--text);
+  font-size: 11px;
+}
+
+.profile-info small {
+  margin-top: 2px;
+  color: var(--muted-2);
+  font-size: 9px;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+.main-content {
+  width: calc(100% - var(--sidebar-width));
+
+  margin-left: var(--sidebar-width);
+}
+
+.topbar {
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 42px;
+
+  border-bottom: 1px solid var(--border);
+
+  background: rgba(11, 13, 16, 0.72);
+
+  backdrop-filter: blur(16px);
+
+  position: sticky;
+  top: 0;
+
+  z-index: 5;
+}
+
+.breadcrumb {
+  display: flex;
+  gap: 9px;
+
+  color: var(--muted-2);
+
+  font-size: 11px;
+}
+
+.breadcrumb strong {
+  color: var(--text);
+}
+
+.breadcrumb b {
+  font-weight: 400;
+  color: #3f4650;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.icon-button,
+.more-button {
+  position: relative;
+
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid var(--border);
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: var(--muted);
+
+  cursor: pointer;
+
+  transition: 180ms ease;
+}
+
+.icon-button:hover,
+.more-button:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.notification span {
+  position: absolute;
+
+  top: 7px;
+  right: 7px;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: var(--accent);
+}
+
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard {
+  max-width: 1450px;
+
+  padding: 43px 42px 70px;
+
+  margin: auto;
+}
+
+.welcome {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  margin-bottom: 31px;
+}
+
+.eyebrow {
+  margin-bottom: 10px;
+}
+
+.welcome h1 {
+  margin: 0;
+
+  font-family: Manrope, sans-serif;
+
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.1;
+
+  letter-spacing: -1.7px;
+}
+
+.welcome h1 span {
+  font-size: 26px;
+}
+
+.welcome p {
+  margin: 10px 0 0;
+
+  color: var(--muted);
+
+  font-size: 13px;
+}
+
+.primary-button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 10px 14px;
+
+  border-radius: 9px;
+
+  background: var(--accent);
+  color: #111;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 180ms ease;
+}
+
+.primary-button:hover {
+  background: #c7ff61;
+  transform: translateY(-1px);
+}
+
+
+/* =========================
+   STAT CARDS
+========================= */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+
+  margin-bottom: 13px;
+}
+
+.stat-card {
+  min-height: 165px;
+
+  padding: 18px;
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  background: linear-gradient(
+    145deg,
+    rgba(255,255,255,0.035),
+    rgba(255,255,255,0.012)
+  );
+
+  transition: border-color 200ms ease;
+
+  cursor: default;
+}
+
+.stat-card:hover {
+  border-color: rgba(183, 243, 74, 0.2);
+}
+
+.stat-top {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: 27px;
+}
+
+.stat-icon {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 9px;
+
+  background: rgba(183, 243, 74, 0.08);
+  color: var(--accent);
+}
+
+.stat-arrow {
+  color: var(--muted-2);
+}
+
+.stat-label {
+  display: block;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+.stat-value {
+  display: block;
+
+  margin-top: 5px;
+
+  font-family: Manrope, sans-serif;
+
+  font-size: 26px;
+  letter-spacing: -1px;
+}
+
+.stat-card small {
+  display: block;
+
+  margin-top: 5px;
+
+  color: var(--muted-2);
+
+  font-size: 12px;
+}
+
+
+/* =========================
+   PANELS
+========================= */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 13px;
+
+  margin-bottom: 13px;
+}
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  background: rgba(17, 20, 25, 0.72);
+
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  padding: 20px 21px 0;
+}
+
+.panel-header h3 {
+  margin: 5px 0 0;
+
+  font-family: Manrope, sans-serif;
+
+  font-size: 15px;
+  letter-spacing: -0.4px;
+}
+
+.text-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  background: transparent;
+
+  color: var(--accent);
+
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+/* =========================
+   OCCUPANCY
+========================= */
+
+.occupancy-content {
+  min-height: 240px;
+
+  display: flex;
+  align-items: center;
+  gap: 50px;
+
+  padding: 25px;
+}
+
+.occupancy-ring {
+  width: 170px;
+  height: 170px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at center,
+      var(--surface) 58%,
+      transparent 59%
+    ),
+    conic-gradient(
+      var(--accent) 0deg 180deg,
+      #252b31 180deg 360deg
+    );
+}
+
+.occupancy-ring > div {
+  text-align: center;
+}
+
+.occupancy-ring strong {
+  display: block;
+
+  font-family: Manrope, sans-serif;
+
+  font-size: 31px;
+  letter-spacing: -1px;
+}
+
+.occupancy-ring span {
+  color: var(--muted-2);
+  font-size: 10px;
+}
+
+.occupancy-details {
+  flex: 1;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 0;
+
+  border-bottom: 1px solid var(--border);
+
+  font-size: 11px;
+}
+
+.legend-row span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: var(--muted);
+}
+
+.legend-row strong {
+  color: var(--text);
+}
+
+.legend {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+}
+
+.legend.occupied {
+  background: var(--accent);
+}
+
+.legend.available {
+  background: #66707b;
+}
+
+.legend.full {
+  background: #e87979;
+}
+
+
+/* =========================
+   RENT
+========================= */
+
+.rent-total {
+  padding: 30px 21px 20px;
+}
+
+.rent-total strong {
+  display: block;
+
+  font-family: Manrope, sans-serif;
+
+  font-size: 34px;
+  letter-spacing: -1.5px;
+}
+
+.rent-total span {
+  color: var(--muted-2);
+  font-size: 10px;
+}
+
+.progress-track {
+  height: 7px;
+
+  margin: 0 21px;
+
+  border-radius: 20px;
+
+  background: #242930;
+
+  overflow: hidden;
+}
+
+.progress-value {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: var(--accent);
+}
+
+.rent-meta {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 10px 21px 20px;
+
+  color: var(--muted-2);
+
+  font-size: 9px;
+}
+
+.rent-meta strong {
+  color: var(--muted);
+}
+
+.pending-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin: 0 21px 21px;
+  padding: 12px;
+
+  border: 1px solid rgba(255, 112, 112, 0.12);
+  border-radius: 9px;
+
+  background: rgba(255, 112, 112, 0.035);
+
+  color: var(--muted);
+}
+
+.alert-icon {
+  width: 25px;
+  height: 25px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 7px;
+
+  background: rgba(255, 112, 112, 0.12);
+  color: var(--danger);
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.pending-alert div:nth-child(2) {
+  flex: 1;
+}
+
+.pending-alert strong,
+.pending-alert span {
+  display: block;
+}
+
+.pending-alert strong {
+  color: var(--text);
+  font-size: 10px;
+}
+
+.pending-alert span {
+  margin-top: 2px;
+  font-size: 9px;
+}
+
+
+/* =========================
+   ACTIVITY
+========================= */
+
+.activity-list {
+  padding: 10px 21px 14px;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  min-height: 60px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.activity-item:last-child {
+  border-bottom: 0;
+}
+
+.activity-avatar {
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 9px;
+
+  background: #20262d;
+
+  color: #d9e0e7;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.activity-info {
+  flex: 1;
+}
+
+.activity-info strong,
+.activity-info span {
+  display: block;
+}
+
+.activity-info strong {
+  color: var(--text);
+  font-size: 11px;
+}
+
+.activity-info span {
+  margin-top: 3px;
+
+  color: var(--muted-2);
+
+  font-size: 9px;
+}
+
+.activity-time {
+  color: var(--muted-2);
+  font-size: 9px;
+}
+
+.activity-amount {
+  min-width: 60px;
+
+  text-align: right;
+
+  color: var(--text);
+
+  font-size: 10px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+
+  :root {
+    --sidebar-width: 0px;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .main-content {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .topbar {
+    padding: 0 20px;
+  }
+
+  .dashboard {
+    padding: 30px 20px 50px;
+  }
+
+  .welcome {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .occupancy-content {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .activity-time {
+    display: none;
+  }
+}
+
+/* =========================================================
+   ROOMS PAGE
+========================================================= */
+
+.rooms-page {
+  max-width: 1450px;
+  padding: 43px 42px 70px;
+  margin: auto;
+}
+
+/* Page header */
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  margin: 7px 0 0;
+
+  font-family: Manrope, sans-serif;
+  font-size: clamp(30px, 3vw, 38px);
+  line-height: 1.1;
+  letter-spacing: -1.7px;
+}
+
+.page-header p {
+  margin: 10px 0 0;
+
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* Error */
+
+.error-message {
+  margin-bottom: 15px;
+  padding: 12px 15px;
+
+  border: 1px solid rgba(255, 112, 112, 0.18);
+  border-radius: 10px;
+
+  background: rgba(255, 112, 112, 0.05);
+  color: var(--danger);
+
+  font-size: 11px;
+}
+
+/* Summary */
+
+.room-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+
+  margin-bottom: 14px;
+}
+
+.room-summary-card {
+  min-height: 145px;
+  padding: 18px;
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.035),
+    rgba(255, 255, 255, 0.012)
+  );
+
+  transition:
+    border-color 100ms ease,
+    background 100ms ease;
+
+  cursor: default;
+}
+
+.room-summary-card:hover {
+  border-color: rgba(183, 243, 74, 0.2);
+
+  background: linear-gradient(
+    145deg,
+    rgba(183, 243, 74, 0.045),
+    rgba(255, 255, 255, 0.012)
+  );
+}
+
+.summary-icon {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 24px;
+
+  border-radius: 9px;
+
+  background: rgba(183, 243, 74, 0.08);
+  color: var(--accent);
+}
+
+.room-summary-card span {
+  display: block;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+.room-summary-card strong {
+  display: block;
+
+  margin-top: 5px;
+
+  font-family: Manrope, sans-serif;
+  font-size: 26px;
+  letter-spacing: -1px;
+}
+
+/* Toolbar */
+
+.rooms-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 13px;
+}
+
+.search-box {
+  width: 100%;
+  max-width: 360px;
+
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 13px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: rgba(17, 20, 25, 0.72);
+
+  color: var(--muted);
+
+  transition: border-color 180ms ease;
+}
+
+.search-box:focus-within {
+  border-color: rgba(183, 243, 74, 0.35);
+}
+
+.search-box input {
+  width: 100%;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  color: var(--text);
+
+  font-size: 11px;
+}
+
+.search-box input::placeholder {
+  color: var(--muted-2);
+}
+
+/* Room grid */
+
+.rooms-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 13px;
+}
+
+/* Room card */
+
+.room-card {
+  min-height: 225px;
+
+  padding: 20px;
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.035),
+      rgba(255, 255, 255, 0.012)
+    );
+
+  transition:
+    border-color 100ms ease,
+    background 100ms ease;
+
+  cursor: default;
+}
+
+.room-card:hover {
+  border-color: rgba(183, 243, 74, 0.22);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(183, 243, 74, 0.035),
+      rgba(255, 255, 255, 0.012)
+    );
+}
+
+/* Card header */
+
+.room-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  margin-bottom: 30px;
+}
+
+.room-label {
+  display: block;
+
+  color: var(--muted-2);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 1.5px;
+}
+
+.room-card-header h2 {
+  margin: 5px 0 0;
+
+  font-family: Manrope, sans-serif;
+
+  font-size: 27px;
+
+  letter-spacing: -1px;
+}
+
+/* More button */
+
+.room-card .more-button {
+  width: 34px;
+  height: 34px;
+}
+
+/* Status */
+
+.room-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 10px;
+}
+
+.room-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.room-status > span {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+}
+
+.room-status.available {
+  color: var(--accent);
+}
+
+.room-status.available > span {
+  background: var(--accent);
+
+  box-shadow: 0 0 10px rgba(183, 243, 74, 0.45);
+}
+
+.room-status.full {
+  color: var(--danger);
+}
+
+.room-status.full > span {
+  background: var(--danger);
+}
+
+.room-status-row strong {
+  color: var(--text);
+
+  font-family: Manrope, sans-serif;
+
+  font-size: 12px;
+}
+
+/* Progress */
+
+.room-progress {
+  width: 100%;
+  height: 6px;
+
+  margin-bottom: 15px;
+
+  overflow: hidden;
+
+  border-radius: 20px;
+
+  background: #242930;
+}
+
+.room-progress > div {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: var(--accent);
+}
+
+/* Footer */
+
+.room-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding-top: 14px;
+
+  border-top: 1px solid var(--border);
+
+  color: var(--muted-2);
+
+  font-size:12px;
+}
+
+.room-footer span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Loading */
+
+.rooms-loading {
+  min-height: 180px;
+
+  display: grid;
+  place-items: center;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+/* Empty */
+
+.rooms-empty {
+  min-height: 260px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  background: rgba(17, 20, 25, 0.72);
+
+  color: var(--muted);
+}
+
+.rooms-empty svg {
+  color: var(--accent);
+}
+
+.rooms-empty h3 {
+  margin: 14px 0 5px;
+
+  color: var(--text);
+
+  font-family: Manrope, sans-serif;
+  font-size: 15px;
+}
+
+.rooms-empty p {
+  margin: 0;
+
+  color: var(--muted-2);
+
+  font-size: 10px;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+  .room-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .rooms-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .rooms-page {
+    padding: 30px 20px 50px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .room-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .rooms-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .search-box {
+    max-width: none;
+  }
+}
+
+
+/* =========================================
+   TENANTS PAGE
+========================================= */
+
+.tenants-page {
+  padding: 42px 44px 60px;
+}
+
+/* Header */
+
+.tenants-page .page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 36px;
+}
+
+.tenants-page .page-header h1 {
+  margin: 8px 0 8px;
+}
+
+.tenants-page .page-header p {
+  margin: 0;
+}
+
+
+/* =========================================
+   TENANT SUMMARY
+========================================= */
+
+.tenant-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.tenant-summary-card {
+  min-height: 150px;
+  padding: 20px;
+  border: 1px solid #25282d;
+  border-radius: 14px;
+  background: #111316;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  transition: border-color 0.2s ease,
+              transform 0.2s ease;
+}
+
+.tenant-summary-card:hover {
+  border-color: #3d472f;
+}
+
+.tenant-summary-card .summary-icon {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: rgba(174, 255, 47, 0.08);
+  color: #adff2f;
+}
+
+.tenant-summary-card span {
+  margin-top: 18px;
+  color: #87909d;
+  font-size: 13px;
+}
+
+.tenant-summary-card strong {
+  margin-top: 4px;
+  color: #f4f5f7;
+  font-size: 30px;
+  line-height: 1;
+}
+
+
+/* =========================================
+   TENANT TOOLBAR
+========================================= */
+
+.tenants-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 14px;
+}
+
+.tenants-toolbar .search-box {
+  width: 390px;
+}
+
+
+/* =========================================
+   TENANT GRID
+========================================= */
+
+.tenants-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+
+/* =========================================
+   TENANT CARD
+========================================= */
+
+.tenant-card {
+  position: relative;
+
+  min-height: 220px;
+  padding: 22px;
+
+  border: 1px solid #25282d;
+  border-radius: 14px;
+
+  background: #111316;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.tenant-card:hover {
+  border-color: #39422d;
+}
+
+
+/* Card Header */
+
+.tenant-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  margin-bottom: 24px;
+}
+
+.tenant-label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #68717d;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.tenant-card-header h2 {
+  margin: 0;
+
+  color: #f5f7fa;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+
+/* =========================================
+   TENANT MENU
+========================================= */
+
+.tenant-menu-wrapper {
+  position: relative;
+}
+
+.more-button {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #25282d;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #7d8794;
+
+  cursor: pointer;
+}
+
+.more-button:hover {
+  color: #ffffff;
+  border-color: #3a4149;
+  background: #181b1f;
+}
+
+.tenant-menu {
+  position: absolute;
+
+  top: 44px;
+  right: 0;
+
+  z-index: 20;
+
+  width: 150px;
+
+  padding: 6px;
+
+  border: 1px solid #292d33;
+  border-radius: 10px;
+
+  background: #17191d;
+
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.tenant-menu button {
+  width: 100%;
+
+  padding: 9px 10px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: transparent;
+  color: #c8cdd4;
+
+  text-align: left;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.tenant-menu button:hover {
+  background: #22262b;
+  color: #ffffff;
+}
+
+.tenant-menu .delete-action:hover {
+  background: rgba(255, 70, 70, 0.1);
+  color: #ff6b6b;
+}
+
+
+/* =========================================
+   TENANT DETAILS
+========================================= */
+
+.tenant-details {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.tenant-detail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #9ba3ae;
+  font-size: 13px;
+}
+
+.tenant-detail svg {
+  flex-shrink: 0;
+  color: #aaff2f;
+}
+
+.tenant-detail strong {
+  color: #e5e8ec;
+  font-weight: 500;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.tenants-empty {
+  min-height: 280px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px dashed #292d33;
+  border-radius: 14px;
+
+  color: #737c88;
+
+  text-align: center;
+}
+
+.tenants-empty svg {
+  margin-bottom: 14px;
+  color: #aaff2f;
+}
+
+.tenants-empty h3 {
+  margin: 0 0 8px;
+
+  color: #e7e9ec;
+  font-size: 18px;
+}
+
+.tenants-empty p {
+  margin: 0;
+
+  color: #747d89;
+  font-size: 13px;
+}
+
+
+/* =========================================
+   LOADING
+========================================= */
+
+.tenants-loading {
+  padding: 50px;
+
+  color: #89929e;
+
+  text-align: center;
+}
+
+
+/* =========================================
+   ERROR
+========================================= */
+
+.tenant-error {
+  margin-bottom: 20px;
+  padding: 12px 15px;
+
+  border: 1px solid rgba(255, 80, 80, 0.25);
+  border-radius: 10px;
+
+  background: rgba(255, 70, 70, 0.08);
+  color: #ff7777;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   ADD TENANT MODAL
+========================================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(5px);
+
+  /* ADD THESE */
+  overflow-y: auto;
+}
+
+.tenant-modal {
+  width: min(500px, 100%);
+  padding: 26px;
+
+  border: 1px solid #292d33;
+  border-radius: 16px;
+
+  background: #111316;
+
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
+
+  /* ADD THESE */
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  margin-bottom: 25px;
+}
+
+.modal-header h2 {
+  margin: 7px 0 0;
+
+  color: #f5f6f8;
+}
+
+.modal-close {
+  width: 34px;
+  height: 34px;
+
+  border: 1px solid #292d33;
+  border-radius: 8px;
+
+  background: transparent;
+  color: #8a929d;
+
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  color: #ffffff;
+  background: #1b1e22;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  margin-bottom: 17px;
+}
+
+.form-group label {
+  color: #aeb5bf;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 12px 13px;
+
+  border: 1px solid #292d33;
+  border-radius: 9px;
+
+  outline: none;
+
+  background: #17191d;
+  color: #f1f3f5;
+
+  font-size: 14px;
+}
+
+.form-group input::placeholder {
+  color: #59616c;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #aaff2f;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  margin-top: 24px;
+}
+
+.form-error {
+  margin-top: 5px;
+
+  color: #ff7777;
+  font-size: 13px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1100px) {
+  .tenant-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tenants-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .tenants-page {
+    padding: 25px 20px 40px;
+  }
+
+  .tenants-page .page-header {
+    flex-direction: column;
+  }
+
+  .tenant-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .tenants-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tenants-toolbar .search-box {
+    width: 100%;
+  }
+}
+
+.tenant-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.tenant-footer strong {
+  margin-left: auto;
+}
+
+/* =========================================================
+   RENT PAGE
+   ========================================================= */
+
+.rent-page {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 36px 60px;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.rent-page .page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.rent-page .page-header h1 {
+  margin: 6px 0 8px;
+  font-size: 42px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+}
+
+.rent-page .page-header p {
+  margin: 0;
+  color: #8b96a7;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.rent-page .eyebrow {
+  display: block;
+  color: #8fa0b5;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
+.rent-page .primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 42px;
+  padding: 0 18px;
+
+  border: 0;
+  border-radius: 10px;
+
+  background: #b6ff3d;
+  color: #10150b;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.rent-page .primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(182, 255, 61, 0.16);
+}
+
+.rent-page .primary-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =========================================================
+   ERROR MESSAGE
+   ========================================================= */
+
+.rent-page .error-message {
+  width: 100%;
+  box-sizing: border-box;
+
+  margin-bottom: 22px;
+  padding: 13px 16px;
+
+  border: 1px solid rgba(255, 90, 90, 0.25);
+  border-radius: 10px;
+
+  background: rgba(120, 20, 20, 0.12);
+  color: #ff6b6b;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   MONTH TOOLBAR
+   ========================================================= */
+
+.rent-page .rent-month-toolbar {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 22px;
+}
+
+.rent-page .rent-month-toolbar > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rent-page .rent-month-toolbar input {
+  width: 190px;
+  height: 42px;
+  box-sizing: border-box;
+
+  padding: 0 12px;
+
+  border: 1px solid #29313c;
+  border-radius: 9px;
+
+  background: #11151a;
+  color: #f1f4f8;
+
+  font-size: 14px;
+  outline: none;
+}
+
+.rent-page .rent-month-toolbar input:focus {
+  border-color: #9ddc35;
+  box-shadow: 0 0 0 3px rgba(182, 255, 61, 0.08);
+}
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+.rent-page .rent-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+
+  margin-bottom: 22px;
+}
+
+.rent-page .rent-summary-card {
+  min-height: 135px;
+  box-sizing: border-box;
+
+  padding: 20px;
+
+  border: 1px solid #222a33;
+  border-radius: 14px;
+
+  background: #11151a;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rent-page .rent-summary-card:hover {
+  border-color: #35404c;
+}
+
+.rent-page .summary-icon {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: rgba(182, 255, 61, 0.09);
+  color: #b6ff3d;
+}
+
+.rent-page .rent-summary-card > span {
+  margin-top: 14px;
+
+  color: #8b96a7;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.rent-page .rent-summary-card > strong {
+  margin-top: 4px;
+
+  color: #f3f5f7;
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+/* =========================================================
+   STATUS FILTERS
+   ========================================================= */
+
+.rent-page .rent-status-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 16px;
+
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.rent-page .rent-status-summary::-webkit-scrollbar {
+  display: none;
+}
+
+.rent-page .rent-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  min-height: 38px;
+  padding: 0 13px;
+
+  border: 1px solid #252d36;
+  border-radius: 9px;
+
+  background: #11151a;
+  color: #8f9aaa;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  white-space: nowrap;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.rent-page .rent-filter:hover {
+  border-color: #3a4552;
+  color: #d9dee5;
+}
+
+.rent-page .rent-filter.active {
+  border-color: rgba(182, 255, 61, 0.35);
+  background: rgba(182, 255, 61, 0.09);
+  color: #b6ff3d;
+}
+
+.rent-page .rent-filter strong {
+  min-width: 20px;
+  height: 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 6px;
+
+  background: rgba(255, 255, 255, 0.06);
+  color: #dce1e7;
+
+  font-size: 11px;
+}
+
+.rent-page .rent-filter.active strong {
+  background: rgba(182, 255, 61, 0.12);
+  color: #b6ff3d;
+}
+
+/* =========================================================
+   SEARCH TOOLBAR
+   ========================================================= */
+
+.rent-page .rent-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+}
+
+.rent-page .search-box {
+  width: 100%;
+  max-width: 520px;
+  height: 44px;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 14px;
+
+  border: 1px solid #252d36;
+  border-radius: 10px;
+
+  background: #11151a;
+
+  color: #697585;
+}
+
+.rent-page .search-box:focus-within {
+  border-color: #46515e;
+  box-shadow: 0 0 0 3px rgba(182, 255, 61, 0.05);
+}
+
+.rent-page .search-box input {
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+  outline: none;
+
+  background: transparent;
+  color: #eef2f5;
+
+  font-size: 13px;
+}
+
+.rent-page .search-box input::placeholder {
+  color: #697585;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.rent-page .rent-loading {
+  min-height: 180px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #7f8b9b;
+  font-size: 14px;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.rent-page .rent-empty {
+  min-height: 260px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px;
+
+  border: 1px dashed #2b343e;
+  border-radius: 14px;
+
+  background: rgba(17, 21, 26, 0.65);
+
+  text-align: center;
+}
+
+.rent-page .rent-empty svg {
+  margin-bottom: 14px;
+  color: #b6ff3d;
+}
+
+.rent-page .rent-empty h3 {
+  margin: 0 0 7px;
+
+  color: #edf1f5;
+  font-size: 18px;
+}
+
+.rent-page .rent-empty p {
+  margin: 0;
+
+  color: #7f8b9b;
+  font-size: 13px;
+}
+
+/* =========================================================
+   RENT GRID
+   ========================================================= */
+
+.rent-page .rent-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* =========================================================
+   RENT CARD
+   ========================================================= */
+
+.rent-page .rent-card {
+  position: relative;
+
+  min-width: 0;
+  box-sizing: border-box;
+
+  padding: 20px;
+
+  border: 1px solid #222a33;
+  border-radius: 14px;
+
+  background: #11151a;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.rent-page .rent-card:hover {
+  border-color: #35404c;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.16);
+}
+
+/* =========================================================
+   RENT CARD HEADER
+   ========================================================= */
+
+.rent-page .rent-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+
+  margin-bottom: 22px;
+}
+
+.rent-page .tenant-label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #657181;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.rent-page .rent-card-header h2 {
+  margin: 0;
+
+  color: #f0f3f6;
+
+  font-size: 19px;
+  font-weight: 650;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   MORE MENU
+   ========================================================= */
+
+.rent-page .tenant-menu-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.rent-page .more-button {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #29313a;
+  border-radius: 8px;
+
+  background: #151a20;
+  color: #8a95a4;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rent-page .more-button:hover {
+  border-color: #3b4652;
+  background: #1a2027;
+  color: #f0f3f5;
+}
+
+.rent-page .room-menu {
+  position: absolute;
+  z-index: 20;
+
+  top: 40px;
+  right: 0;
+
+  min-width: 150px;
+
+  padding: 6px;
+
+  border: 1px solid #2b343e;
+  border-radius: 10px;
+
+  background: #171c22;
+
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+}
+
+.rent-page .room-menu button {
+  width: 100%;
+
+  padding: 9px 11px;
+
+  border: 0;
+  border-radius: 7px;
+
+  background: transparent;
+  color: #cbd2da;
+
+  text-align: left;
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.rent-page .room-menu button:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+/* =========================================================
+   RENT AMOUNT
+   ========================================================= */
+
+.rent-page .rent-amount {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 15px;
+
+  padding-bottom: 18px;
+
+  border-bottom: 1px solid #222a32;
+}
+
+.rent-page .rent-amount span {
+  color: #778392;
+  font-size: 12px;
+}
+
+.rent-page .rent-amount strong {
+  color: #b6ff3d;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* =========================================================
+   TENANT INFO
+   ========================================================= */
+
+.rent-page .tenant-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  padding: 17px 0;
+
+  border-bottom: 1px solid #222a32;
+}
+
+.rent-page .tenant-info > div {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #9ba5b2;
+  font-size: 12px;
+}
+
+.rent-page .tenant-info svg {
+  flex-shrink: 0;
+  color: #788595;
+}
+
+.rent-page .tenant-info span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   DATES
+   ========================================================= */
+
+.rent-page .rent-dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+
+  padding: 17px 0;
+}
+
+.rent-page .rent-dates > div {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rent-page .rent-dates span {
+  color: #697585;
+  font-size: 11px;
+}
+
+.rent-page .rent-dates strong {
+  color: #dce2e8;
+  font-size: 12px;
+  font-weight: 600;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rent-page .rent-dates .overdue-text {
+  color: #ff6b6b;
+}
+
+/* =========================================================
+   CARD FOOTER / STATUS
+   ========================================================= */
+
+.rent-page .rent-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.rent-page .rent-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 27px;
+  padding: 0 10px;
+
+  border-radius: 7px;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.rent-page .rent-status.paid {
+  background: rgba(74, 222, 128, 0.10);
+  color: #4ade80;
+}
+
+.rent-page .rent-status.pending {
+  background: rgba(250, 204, 21, 0.10);
+  color: #facc15;
+}
+
+.rent-page .rent-status.overdue {
+  background: rgba(248, 113, 113, 0.10);
+  color: #f87171;
+}
+
+/* =========================================================
+   MODAL OVERLAY
+   ========================================================= */
+
+.rent-page .modal-overlay {
+  position: fixed;
+  z-index: 1000;
+
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(5px);
+
+  overflow-y: auto;
+}
+
+/* =========================================================
+   RENT MODAL
+   ========================================================= */
+
+.rent-page .room-modal {
+  width: 100%;
+  max-width: 480px;
+
+  max-height: calc(100vh - 48px);
+
+  box-sizing: border-box;
+
+  padding: 24px;
+
+  border: 1px solid #2a333d;
+  border-radius: 16px;
+
+  background: #12171c;
+
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+
+  overflow-y: auto;
+}
+
+.rent-page .modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+
+  margin-bottom: 24px;
+}
+
+.rent-page .modal-header h2 {
+  margin: 6px 0 0;
+
+  color: #f1f4f7;
+
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.rent-page .modal-close {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #2b343e;
+  border-radius: 8px;
+
+  background: #171c22;
+  color: #9ba5b2;
+
+  font-size: 22px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.rent-page .modal-close:hover {
+  background: #20262d;
+  color: #ffffff;
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.rent-page .room-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.rent-page .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.rent-page .form-group label {
+  color: #aab4c0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.rent-page .form-group input,
+.rent-page .form-group select {
+  width: 100%;
+  height: 42px;
+
+  box-sizing: border-box;
+
+  padding: 0 12px;
+
+  border: 1px solid #29323c;
+  border-radius: 9px;
+
+  outline: none;
+
+  background: #0f1419;
+  color: #edf1f5;
+
+  font-size: 13px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.rent-page .form-group input:focus,
+.rent-page .form-group select:focus {
+  border-color: #8dbf37;
+  box-shadow: 0 0 0 3px rgba(182, 255, 61, 0.07);
+}
+
+.rent-page .form-group input::placeholder {
+  color: #626d7b;
+}
+
+.rent-page .form-group input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rent-page .form-group select {
+  cursor: pointer;
+}
+
+.rent-page .form-error {
+  padding: 11px 12px;
+
+  border: 1px solid rgba(255, 90, 90, 0.25);
+  border-radius: 8px;
+
+  background: rgba(120, 20, 20, 0.12);
+  color: #ff7474;
+
+  font-size: 12px;
+  line-height: 1.45;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   MODAL ACTIONS
+   ========================================================= */
+
+.rent-page .modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+
+  margin-top: 5px;
+}
+
+.rent-page .secondary-button {
+  min-height: 42px;
+  padding: 0 16px;
+
+  border: 1px solid #303943;
+  border-radius: 9px;
+
+  background: #171c22;
+  color: #b5bec9;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.rent-page .secondary-button:hover {
+  background: #20262d;
+  color: #ffffff;
+}
+
+.rent-page .secondary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+  .rent-page {
+    padding: 28px 26px 50px;
+  }
+
+  .rent-page .rent-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rent-page .rent-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================================================
+   SMALL LAPTOP / TABLET
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+  .rent-page {
+    padding: 24px 20px 45px;
+  }
+
+  .rent-page .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rent-page .page-header h1 {
+    font-size: 36px;
+  }
+
+  .rent-page .page-header .primary-button {
+    width: 100%;
+  }
+
+  .rent-page .rent-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rent-page .search-box {
+    max-width: none;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  .rent-page {
+    padding: 20px 14px 35px;
+  }
+
+  .rent-page .page-header {
+    margin-bottom: 22px;
+  }
+
+  .rent-page .page-header h1 {
+    font-size: 32px;
+    letter-spacing: -1px;
+  }
+
+  .rent-page .page-header p {
+    font-size: 13px;
+  }
+
+  .rent-page .rent-month-toolbar input {
+    width: 100%;
+  }
+
+  .rent-page .rent-summary {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .rent-page .rent-summary-card {
+    min-height: 120px;
+  }
+
+  .rent-page .rent-status-summary {
+    padding-bottom: 4px;
+  }
+
+  .rent-page .rent-filter {
+    flex-shrink: 0;
+  }
+
+  .rent-page .rent-card {
+    padding: 17px;
+  }
+
+  .rent-page .rent-amount strong {
+    font-size: 21px;
+  }
+
+  .rent-page .tenant-info {
+    grid-template-columns: 1fr;
+  }
+
+  .rent-page .rent-dates {
+    grid-template-columns: 1fr;
+  }
+
+  .rent-page .modal-overlay {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .rent-page .room-modal {
+    max-height: calc(100vh - 28px);
+    padding: 20px;
+  }
+
+  .rent-page .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .rent-page .modal-actions button {
+    width: 100%;
+  }
+}
+
+/* =====================================================
+   OCCUPANCY PANEL
+===================================================== */
+
+.occupancy-panel {
+  min-height: 420px;
+}
+
+.occupancy-header-icon {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: rgba(164, 255, 59, 0.08);
+  color: #a4ff3b;
+}
+
+.occupancy-room-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  margin-top: 24px;
+}
+
+.occupancy-room {
+  padding: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.occupancy-room-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.occupancy-room-header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.occupancy-room-header strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.occupancy-room-header span {
+  font-size: 12px;
+  color: #7f8794;
+}
+
+
+/* =====================================================
+   OCCUPANCY STATUS
+===================================================== */
+
+.occupancy-status {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  font-size: 11px !important;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.occupancy-status.full {
+  background: rgba(255, 92, 92, 0.10);
+  color: #ff6b6b;
+}
+
+.occupancy-status.available {
+  background: rgba(164, 255, 59, 0.08);
+  color: #a4ff3b;
+}
+
+
+/* =====================================================
+   PROGRESS BAR
+===================================================== */
+
+.occupancy-progress {
+  width: 100%;
+  height: 7px;
+
+  margin-top: 15px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.occupancy-progress-fill {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: #a4ff3b;
+}
+
+
+/* =====================================================
+   ROOM FOOTER
+===================================================== */
+
+.occupancy-room-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 10px;
+
+  font-size: 12px;
+  color: #7f8794;
+}
+
+.occupancy-room-footer span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.occupancy-room-footer strong {
+  color: #f1f3f5;
+  font-size: 12px;
+}
+
+
+/* =====================================================
+   TOTAL OCCUPANCY
+===================================================== */
+
+.occupancy-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 22px;
+  padding: 18px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.occupancy-total > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.occupancy-total span {
+  font-size: 12px;
+  color: #7f8794;
+}
+
+.occupancy-total strong {
+  font-size: 20px;
+}
+
+.occupancy-total-details {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.occupancy-total-details span {
+  font-size: 11px;
+}
+
+
+/* =====================================================
+   STATES
+===================================================== */
+
+.panel-loading,
+.panel-error,
+.panel-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 200px;
+
+  color: #7f8794;
+
+  font-size: 13px;
+}
+
+.panel-error {
+  color: #ff6b6b;
+}
+
+.panel-empty {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.panel-empty h3 {
+  margin: 0;
+
+  color: #f1f3f5;
+
+  font-size: 15px;
+}
+
+.panel-empty p {
+  margin: 0;
+
+  color: #7f8794;
+
+  font-size: 12px;
+}
+
+/* =====================================================
+   RENT PANEL
+===================================================== */
+
+.rent-panel {
+  padding: 22px;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.rent-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+
+.rent-panel-header h2 {
+  margin: 7px 0 4px;
+  font-size: 25px;
+}
+
+
+.rent-panel-header p {
+  margin: 0;
+  color: #8b929c;
+  font-size: 14px;
+}
+
+
+.rent-panel-icon {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: rgba(157, 255, 38, 0.1);
+  color: #a3ff2f;
+}
+
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+.rent-panel-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  padding-bottom: 20px;
+
+  border-bottom: 1px solid #25282d;
+}
+
+
+.rent-stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+.rent-stat-icon {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: #191d20;
+  color: #a3ff2f;
+}
+
+
+.rent-stat span {
+  display: block;
+
+  color: #8b929c;
+
+  font-size: 12px;
+
+  margin-bottom: 2px;
+}
+
+
+.rent-stat strong {
+  display: block;
+
+  font-size: 18px;
+  color: #f1f3f5;
+}
+
+
+/* =====================================================
+   PAYMENT STATUS
+===================================================== */
+
+.rent-payment-status {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 18px 0;
+
+  border-bottom: 1px solid #25282d;
+}
+
+
+.payment-status-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color: #8b929c;
+
+  font-size: 13px;
+}
+
+
+.payment-status-item svg {
+  color: #a3ff2f;
+}
+
+
+.payment-status-item strong {
+  color: #f1f3f5;
+  margin-left: 2px;
+}
+
+
+/* =====================================================
+   PENDING TENANTS
+===================================================== */
+
+.pending-rent-section {
+  padding-top: 20px;
+}
+
+
+.pending-rent-header h3 {
+  margin: 8px 0 15px;
+
+  font-size: 18px;
+}
+
+
+.pending-rent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+.pending-rent-item {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 11px;
+
+  border-radius: 10px;
+
+  background: #15181b;
+
+  border: 1px solid #22262a;
+}
+
+
+.pending-rent-icon {
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #1d2023;
+  color: #a3ff2f;
+}
+
+
+.pending-rent-info {
+  min-width: 0;
+  flex: 1;
+}
+
+
+.pending-rent-info strong {
+  display: block;
+
+  color: #f1f3f5;
+
+  font-size: 13px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.pending-rent-info span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #777f89;
+
+  font-size: 11px;
+}
+
+
+.pending-rent-amount {
+  text-align: right;
+}
+
+
+.pending-rent-amount strong {
+  display: block;
+
+  color: #f1f3f5;
+
+  font-size: 13px;
+}
+
+
+.pending-rent-amount span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #777f89;
+
+  font-size: 10px;
+}
+
+
+/* =====================================================
+   EMPTY PENDING STATE
+===================================================== */
+
+.no-pending-rent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 14px;
+
+  border-radius: 10px;
+
+  background: #15181b;
+
+  color: #a3ff2f;
+
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.rent-panel-loading {
+  min-height: 300px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #777f89;
+
+  font-size: 13px;
+}
+
+/* =========================================
+   ACTIVITY PANEL
+========================================= */
+
+.activity-panel {
+  margin-top: 18px;
+  padding: 24px;
+}
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.activity-header h2 {
+  margin-top: 8px;
+  font-size: 24px;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(150, 255, 40, 0.08);
+  color: #9cff28;
+
+  flex-shrink: 0;
+}
+
+.activity-details {
+  flex: 1;
+}
+
+.activity-details h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.activity-details p {
+  margin: 5px 0 0;
+  font-size: 13px;
+  color: #737b88;
+}
+
+.activity-date {
+  font-size: 12px;
+  color: #6d7480;
+  white-space: nowrap;
+}
+
+.activity-empty {
+  padding: 40px 0;
+  text-align: center;
+  color: #737b88;
+}
+
+.activity-panel {
+  scroll-margin-top: 90px;
+}
+
+/* =========================================
+   LIGHT MODE
+========================================= */
+
+body.light-mode {
+  background: #f5f7fa;
+  color: #171a1e;
+}
+
+body.light-mode .settings-page {
+  color: #171a1e;
+}
+
+body.light-mode .settings-card {
+  background: #ffffff;
+  border-color: #dfe3e8;
+}
+
+body.light-mode .settings-section-header h2 {
+  color: #171a1e;
+}
+
+body.light-mode .settings-section-header p {
+  color: #697586;
+}
+
+body.light-mode .setting-item {
+  background: #f8fafb;
+  border-color: #dfe3e8;
+}
+
+body.light-mode .setting-item:hover {
+  background: #f1f4f6;
+}
+
+body.light-mode .setting-info strong {
+  color: #171a1e;
+}
+
+body.light-mode .setting-info span {
+  color: #697586;
+}
+
+body.light-mode .settings-divider {
+  background: #e1e5e9;
+}
+
+body.light-mode .settings-saved {
+  border-color: #e1e5e9;
+  color: #697586;
+}
+
+body.light-mode .page-header h1 {
+  color: #171a1e;
+}
+
+body.light-mode .page-header p {
+  color: #697586;
+}

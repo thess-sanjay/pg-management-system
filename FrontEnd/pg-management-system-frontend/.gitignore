@@ -1,0 +1,54 @@
+# ================================
+# Node / Frontend
+# ================================
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ================================
+# Java / Spring Boot
+# ================================
+target/
+*.class
+
+# Maven
+.mvn/
+
+# ================================
+# Environment / Secrets
+# ================================
+.env
+.env.*
+!.env.example
+
+# ================================
+# IDE
+# ================================
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ================================
+# OS
+# ================================
+.DS_Store
+Thumbs.db
+
+# Eclipse
+.metadata/

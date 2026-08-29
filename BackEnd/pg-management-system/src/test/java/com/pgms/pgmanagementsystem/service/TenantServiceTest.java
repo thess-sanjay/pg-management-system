@@ -1,0 +1,358 @@
+
+package com.pgms.pgmanagementsystem.service;
+import com.pgms.pgmanagementsystem.repository.RoomRepository;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.pgms.pgmanagementsystem.entity.Room;
+import com.pgms.pgmanagementsystem.entity.Tenant;
+import com.pgms.pgmanagementsystem.repository.TenantRepository;
+
+@ExtendWith(MockitoExtension.class)
+class TenantServiceTest {
+
+    @Mock
+    private TenantRepository tenantRepository;
+    
+    @Mock
+    private RoomRepository roomRepository;
+
+    @InjectMocks
+    private TenantService tenantService;
+
+    private Tenant tenant1;
+    private Tenant tenant2;
+
+    @BeforeEach
+    void setUp() {
+
+        tenant1 = new Tenant();
+        tenant1.setId(1L);
+        tenant1.setName("Arun Kumar");
+
+        tenant2 = new Tenant();
+        tenant2.setId(2L);
+        tenant2.setName("Karthik");
+    }
+
+    @Test
+    void getAllTenants_ShouldReturnAllTenants() {
+
+        List<Tenant> tenants =
+                Arrays.asList(tenant1, tenant2);
+
+        when(tenantRepository.findAll())
+                .thenReturn(tenants);
+
+        List<Tenant> result =
+                tenantService.getAllTenants();
+
+        assertEquals(2, result.size());
+        assertEquals("Arun Kumar", result.get(0).getName());
+        assertEquals("Karthik", result.get(1).getName());
+    }
+    
+  
+    		@Test
+    		void searchTenantsByName_ShouldReturnMatchingTenants() {
+
+    		    List<Tenant> tenants =
+    		            Arrays.asList(tenant1);
+
+    		    when(tenantRepository.findByNameContainingIgnoreCase("Arun"))
+    		            .thenReturn(tenants);
+
+    		    List<Tenant> result =
+    		            tenantService.searchTenantsByName("Arun");
+
+    		    assertEquals(1, result.size());
+    		    assertEquals("Arun Kumar", result.get(0).getName());
+    		}
+    	
+    		
+    	
+    		@Test
+    		void saveTenant_WhenPhoneAlreadyExists_ShouldThrowDuplicateTenantException() {
+
+    		    Tenant tenant = new Tenant();
+    		    tenant.setName("Rahul");
+    		    tenant.setPhone("9876543210");
+    		    tenant.setEmail("rahul@gmail.com");
+
+    		    when(tenantRepository.existsByPhone("9876543210"))
+    		            .thenReturn(true);
+
+    		    org.junit.jupiter.api.Assertions.assertThrows(
+    		            com.pgms.pgmanagementsystem.exception.DuplicateTenantException.class,
+    		            () -> tenantService.saveTenant(tenant)
+    		    );
+    		}
+    	
+    
+    		@Test
+    		void saveTenant_WhenEmailAlreadyExists_ShouldThrowDuplicateTenantException() {
+
+    		    Tenant tenant = new Tenant();
+    		    tenant.setName("Rahul");
+    		    tenant.setPhone("9999999999");
+    		    tenant.setEmail("rahul@gmail.com");
+
+    		    when(tenantRepository.existsByPhone("9999999999"))
+    		            .thenReturn(false);
+
+    		    when(tenantRepository.existsByEmail("rahul@gmail.com"))
+    		            .thenReturn(true);
+
+    		    org.junit.jupiter.api.Assertions.assertThrows(
+    		            com.pgms.pgmanagementsystem.exception.DuplicateTenantException.class,
+    		            () -> tenantService.saveTenant(tenant)
+    		    );
+    		}
+    	
+    		
+    
+    		@Test
+    		void saveTenant_WhenTenantIsValid_ShouldSaveTenant() {
+
+    		    Tenant tenant = new Tenant();
+    		    tenant.setName("Rahul");
+    		    tenant.setPhone("9999999999");
+    		    tenant.setEmail("rahul@gmail.com");
+    		    tenant.setRoom(null);
+
+    		    when(tenantRepository.existsByPhone("9999999999"))
+    		            .thenReturn(false);
+
+    		    when(tenantRepository.existsByEmail("rahul@gmail.com"))
+    		            .thenReturn(false);
+
+    		    when(tenantRepository.save(tenant))
+    		            .thenReturn(tenant);
+
+    		    Tenant result = tenantService.saveTenant(tenant);
+
+    		    assertEquals("Rahul", result.getName());
+    		    assertEquals("9999999999", result.getPhone());
+    		    assertEquals("rahul@gmail.com", result.getEmail());
+
+    		    // Joining date should be automatically assigned
+    		    org.junit.jupiter.api.Assertions.assertNotNull(
+    		            result.getJoiningDate()
+    		    );
+    		}
+    		
+    
+    		@Test
+    		void saveTenant_WhenRoomDoesNotExist_ShouldThrowRoomNotFoundException() {
+
+    		    Tenant tenant = new Tenant();
+    		    tenant.setName("Rahul");
+    		    tenant.setPhone("9999999999");
+    		    tenant.setEmail("rahul@gmail.com");
+
+    		    Room room = new Room();
+    		    room.setId(99L);
+
+    		    tenant.setRoom(room);
+
+    		    when(tenantRepository.existsByPhone("9999999999"))
+    		            .thenReturn(false);
+
+    		    when(tenantRepository.existsByEmail("rahul@gmail.com"))
+    		            .thenReturn(false);
+
+    		    when(roomRepository.findById(99L))
+    		            .thenReturn(java.util.Optional.empty());
+
+    		    org.junit.jupiter.api.Assertions.assertThrows(
+    		            com.pgms.pgmanagementsystem.exception.RoomNotFoundException.class,
+    		            () -> tenantService.saveTenant(tenant)
+    		    );
+    		}
+    		
+    		
+    	
+    		@Test
+    		void saveTenant_WhenRoomIsFull_ShouldThrowRoomFullException() {
+
+    		    Tenant tenant = new Tenant();
+    		    tenant.setName("Rahul");
+    		    tenant.setPhone("9999999999");
+    		    tenant.setEmail("rahul@gmail.com");
+
+    		    Room roomRequest = new Room();
+    		    roomRequest.setId(1L);
+
+    		    tenant.setRoom(roomRequest);
+
+    		    Room existingRoom = new Room();
+    		    existingRoom.setId(1L);
+    		    existingRoom.setRoomNumber("101");
+    		    existingRoom.setCapacity(4);
+    		    existingRoom.setOccupiedBeds(4);
+
+    		    when(tenantRepository.existsByPhone("9999999999"))
+    		            .thenReturn(false);
+
+    		    when(tenantRepository.existsByEmail("rahul@gmail.com"))
+    		            .thenReturn(false);
+
+    		    when(roomRepository.findById(1L))
+    		            .thenReturn(java.util.Optional.of(existingRoom));
+
+    		    org.junit.jupiter.api.Assertions.assertThrows(
+    		            com.pgms.pgmanagementsystem.exception.RoomFullException.class,
+    		            () -> tenantService.saveTenant(tenant)
+    		    );
+    		}
+    		
+    		
+    	
+    		@Test
+    		void saveTenant_WhenValidRoomAssigned_ShouldIncreaseOccupiedBeds() {
+
+    		    Tenant tenant = new Tenant();
+    		    tenant.setName("Rahul");
+    		    tenant.setPhone("9999999999");
+    		    tenant.setEmail("rahul@gmail.com");
+
+    		    Room requestedRoom = new Room();
+    		    requestedRoom.setId(1L);
+
+    		    tenant.setRoom(requestedRoom);
+
+    		    Room existingRoom = new Room();
+    		    existingRoom.setId(1L);
+    		    existingRoom.setRoomNumber("101");
+    		    existingRoom.setCapacity(4);
+    		    existingRoom.setOccupiedBeds(2);
+
+    		    when(tenantRepository.existsByPhone("9999999999"))
+    		            .thenReturn(false);
+
+    		    when(tenantRepository.existsByEmail("rahul@gmail.com"))
+    		            .thenReturn(false);
+
+    		    when(roomRepository.findById(1L))
+    		            .thenReturn(java.util.Optional.of(existingRoom));
+
+    		    when(tenantRepository.save(tenant))
+    		            .thenReturn(tenant);
+
+    		    Tenant result = tenantService.saveTenant(tenant);
+
+    		    assertEquals(3, existingRoom.getOccupiedBeds());
+    		    assertEquals(existingRoom, result.getRoom());
+    		}
+    		
+
+    
+    		@Test
+    		void deleteTenant_WhenTenantExists_ShouldDecreaseOccupiedBeds() {
+
+    		    Tenant tenant = new Tenant();
+    		    tenant.setId(1L);
+    		    tenant.setName("Rahul");
+
+    		    Room room = new Room();
+    		    room.setId(1L);
+    		    room.setRoomNumber("101");
+    		    room.setCapacity(4);
+    		    room.setOccupiedBeds(3);
+
+    		    tenant.setRoom(room);
+
+    		    when(tenantRepository.findById(1L))
+    		            .thenReturn(java.util.Optional.of(tenant));
+
+    		    tenantService.deleteTenant(1L);
+
+    		    assertEquals(2, room.getOccupiedBeds());
+
+    		    org.mockito.Mockito.verify(roomRepository)
+    		            .save(room);
+
+    		    org.mockito.Mockito.verify(tenantRepository)
+    		            .delete(tenant);
+    		}
+    	
+
+    		@Test
+    		void updateTenant_WhenRoomIsChanged_ShouldUpdateBothRooms() {
+
+    		    // Existing tenant
+    		    Tenant existingTenant = new Tenant();
+    		    existingTenant.setId(1L);
+    		    existingTenant.setName("Rahul");
+
+    		    // Old room
+    		    Room oldRoom = new Room();
+    		    oldRoom.setId(1L);
+    		    oldRoom.setRoomNumber("101");
+    		    oldRoom.setCapacity(4);
+    		    oldRoom.setOccupiedBeds(3);
+
+    		    existingTenant.setRoom(oldRoom);
+
+    		    // Updated tenant requests new room
+    		    Tenant updatedTenant = new Tenant();
+
+    		    Room requestedNewRoom = new Room();
+    		    requestedNewRoom.setId(2L);
+
+    		    updatedTenant.setRoom(requestedNewRoom);
+
+    		    // Actual new room
+    		    Room newRoom = new Room();
+    		    newRoom.setId(2L);
+    		    newRoom.setRoomNumber("102");
+    		    newRoom.setCapacity(4);
+    		    newRoom.setOccupiedBeds(1);
+
+    		    when(tenantRepository.findById(1L))
+    		            .thenReturn(java.util.Optional.of(existingTenant));
+
+    		    when(roomRepository.findById(2L))
+    		            .thenReturn(java.util.Optional.of(newRoom));
+
+    		    when(tenantRepository.save(existingTenant))
+    		            .thenReturn(existingTenant);
+
+    		    Tenant result =
+    		            tenantService.updateTenant(1L, updatedTenant);
+
+    		    // Old room should lose one tenant
+    		    assertEquals(2, oldRoom.getOccupiedBeds());
+
+    		    // New room should gain one tenant
+    		    assertEquals(2, newRoom.getOccupiedBeds());
+
+    		    // Tenant should now belong to new room
+    		    assertEquals(newRoom, result.getRoom());
+
+    		    // Verify room updates were saved
+    		    org.mockito.Mockito.verify(roomRepository)
+    		            .save(oldRoom);
+
+    		    org.mockito.Mockito.verify(roomRepository)
+    		            .save(newRoom);
+
+    		    // Verify tenant was saved
+    		    org.mockito.Mockito.verify(tenantRepository)
+    		            .save(existingTenant);
+    		}
+    		
+
+}
+
