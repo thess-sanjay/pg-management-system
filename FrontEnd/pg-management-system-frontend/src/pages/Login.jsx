@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "https://pg-management-system-meg0.onrender.com";
 
 function Login() {
     const navigate = useNavigate();
