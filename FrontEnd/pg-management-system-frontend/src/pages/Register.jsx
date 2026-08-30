@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight } from "lucide-react";
 
-const API_BASE_URL = "https://pg-management-system-meg0.onrender.com";
+const API_BASE_URL = "https://pg-management-system-meg0.onrender.com/api";
 
 function Register() {
 
