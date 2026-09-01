@@ -1,1 +1,4 @@
 jdbc:mysql://pg-management-system-pg-management-system.a.aivencloud.com:20567/defaultdb?useSSL=true&serverTimezone=UTC
+
+# Eclipse workspace
+BackEnd/.metadata/
