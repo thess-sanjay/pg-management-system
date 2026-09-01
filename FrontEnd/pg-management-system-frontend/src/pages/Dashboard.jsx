@@ -419,7 +419,7 @@ function Dashboard() {
 
               <h1>
 
-                {greeting}, Sanjay{" "}
+                {greeting}, Admin{" "}
 
                 <span>
                   👋
