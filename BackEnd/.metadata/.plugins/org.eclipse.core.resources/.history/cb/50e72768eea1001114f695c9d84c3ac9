@@ -1,0 +1,20 @@
+
+package com.pgms.pgmanagementsystem.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.pgms.pgmanagementsystem.entity.Tenant;
+
+public interface TenantRepository extends JpaRepository<Tenant, Long> {
+
+    boolean existsByPhone(String phone);
+
+    boolean existsByEmail(String email);
+
+    long countByRoomId(Long roomId);
+
+    // Search tenants by name
+    List<Tenant> findByNameContainingIgnoreCase(String name);
+}

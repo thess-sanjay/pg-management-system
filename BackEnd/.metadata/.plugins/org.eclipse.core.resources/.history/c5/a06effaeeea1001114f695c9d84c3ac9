@@ -1,0 +1,178 @@
+package com.pgms.pgmanagementsystem.service;
+import org.springframework.transaction.annotation.Transactional;
+import com.pgms.pgmanagementsystem.exception.TenantNotFoundException;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.pgms.pgmanagementsystem.entity.Room;
+import com.pgms.pgmanagementsystem.entity.Tenant;
+import com.pgms.pgmanagementsystem.exception.DuplicateTenantException;
+import com.pgms.pgmanagementsystem.exception.RoomFullException;
+import com.pgms.pgmanagementsystem.exception.RoomNotFoundException;
+import com.pgms.pgmanagementsystem.repository.RoomRepository;
+import com.pgms.pgmanagementsystem.repository.TenantRepository;
+
+@Service
+public class TenantService {
+
+    private final TenantRepository tenantRepository;
+
+    private final RoomRepository roomRepository;
+
+    public TenantService(
+            TenantRepository tenantRepository,
+            RoomRepository roomRepository) {
+
+        this.tenantRepository = tenantRepository;
+        this.roomRepository = roomRepository;
+    }
+    // Get all tenants
+    public List<Tenant> getAllTenants() {
+        return tenantRepository.findAll();
+    }
+
+    // Create a tenant
+    public Tenant saveTenant(Tenant tenant) {
+    	
+    	if (tenant.getJoiningDate() == null) {
+    	    tenant.setJoiningDate(LocalDate.now());
+    	}
+    	
+        // Check duplicate phone
+        if (tenantRepository.existsByPhone(tenant.getPhone())) {
+            throw new DuplicateTenantException(
+                    "Tenant with phone number " + tenant.getPhone() + " already exists"
+            );
+        }
+
+        // Check duplicate email
+        if (tenantRepository.existsByEmail(tenant.getEmail())) {
+            throw new DuplicateTenantException(
+                    "Tenant with email " + tenant.getEmail() + " already exists"
+            );
+        }
+
+        // Room assignment logic
+        if (tenant.getRoom() != null) {
+
+            Long roomId = tenant.getRoom().getId();
+
+            Room room = roomRepository.findById(roomId)
+                    .orElseThrow(() -> new RoomNotFoundException(
+                            "Room not found with ID: " + roomId
+                    ));
+
+            // Check room capacity
+            if (room.getOccupiedBeds() >= room.getCapacity()) {
+                throw new RoomFullException(
+                        "Room " + room.getRoomNumber() + " is full"
+                );
+            }
+
+            // Increase occupied beds
+            room.setOccupiedBeds(room.getOccupiedBeds() + 1);
+
+            // Save updated room
+            roomRepository.save(room);
+
+            // Attach actual room
+            tenant.setRoom(room);
+        }
+
+        return tenantRepository.save(tenant);
+    }
+    public Tenant getTenantById(Long id) {
+        return tenantRepository.findById(id)
+        		.orElseThrow(() -> new TenantNotFoundException(
+        		        "Tenant not found with ID: " + id
+        		)); 
+    }
+    
+    @Transactional
+    public Tenant updateTenant(Long id, Tenant updatedTenant) {
+
+        Tenant existingTenant = tenantRepository.findById(id)
+        		.orElseThrow(() -> new TenantNotFoundException(
+        		        "Tenant not found with ID: " + id
+        		));
+
+        // Update basic tenant details
+        existingTenant.setName(updatedTenant.getName());
+        existingTenant.setPhone(updatedTenant.getPhone());
+        existingTenant.setEmail(updatedTenant.getEmail());
+        existingTenant.setJoiningDate(updatedTenant.getJoiningDate());
+
+        // Check whether tenant wants to change room
+        if (updatedTenant.getRoom() != null) {
+
+            Long newRoomId = updatedTenant.getRoom().getId();
+
+            Room oldRoom = existingTenant.getRoom();
+
+            // Only process room logic if the room actually changed
+            if (oldRoom == null || !oldRoom.getId().equals(newRoomId)) {
+
+            	// Find new room
+            	Room newRoom = roomRepository.findById(newRoomId)
+            	        .orElseThrow(() -> new RoomNotFoundException(
+            	                "Room not found with ID: " + newRoomId
+            	        ));
+
+                // Check new room capacity
+                if (newRoom.getOccupiedBeds() >= newRoom.getCapacity()) {
+                    throw new RoomFullException(
+                            "Room " + newRoom.getRoomNumber() + " is full"
+                    );
+                }
+
+                // Decrease occupied beds in old room
+                if (oldRoom != null && oldRoom.getOccupiedBeds() > 0) {
+                    oldRoom.setOccupiedBeds(
+                            oldRoom.getOccupiedBeds() - 1
+                    );
+
+                    roomRepository.save(oldRoom);
+                }
+
+                // Increase occupied beds in new room
+                newRoom.setOccupiedBeds(
+                        newRoom.getOccupiedBeds() + 1
+                );
+
+                roomRepository.save(newRoom);
+
+                // Assign new room to tenant
+                existingTenant.setRoom(newRoom);
+            }
+        }
+
+        return tenantRepository.save(existingTenant);
+    }
+    public void deleteTenant(Long id) {
+
+        Tenant existingTenant = tenantRepository.findById(id)
+                .orElseThrow(() -> new TenantNotFoundException(
+                        "Tenant not found with ID: " + id
+                ));
+
+        // Get the room assigned to this tenant
+        Room room = existingTenant.getRoom();
+
+        // Decrease occupied beds
+        if (room != null && room.getOccupiedBeds() > 0) {
+            room.setOccupiedBeds(room.getOccupiedBeds() - 1);
+            roomRepository.save(room);
+        }
+
+        // Delete tenant
+        tenantRepository.delete(existingTenant);
+    }
+    
+    public List<Tenant> searchTenantsByName(String name) {
+
+        return tenantRepository.findByNameContainingIgnoreCase(name);
+    }
+}

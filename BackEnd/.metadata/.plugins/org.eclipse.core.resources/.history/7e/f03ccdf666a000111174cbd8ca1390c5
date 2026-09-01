@@ -1,0 +1,274 @@
+
+package com.pgms.pgmanagementsystem.controller;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pgms.pgmanagementsystem.entity.Room;
+import com.pgms.pgmanagementsystem.entity.Tenant;
+import com.pgms.pgmanagementsystem.service.TenantService;
+
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+
+@ExtendWith(MockitoExtension.class)
+class TenantControllerTest {
+
+    @Mock
+    private TenantService tenantService;
+
+    @InjectMocks
+    private TenantController tenantController;
+
+    private MockMvc mockMvc;
+
+    private ObjectMapper objectMapper;
+
+    private LocalValidatorFactoryBean validator;
+
+    private Tenant tenant;
+
+
+    @BeforeEach
+    void setUp() {
+
+        validator = new LocalValidatorFactoryBean();
+        validator.afterPropertiesSet();
+
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(tenantController)
+                .setValidator(validator)
+                .build();
+
+        objectMapper = new ObjectMapper();
+
+        objectMapper.findAndRegisterModules();
+
+        Room room = new Room();
+        room.setId(1L);
+        room.setRoomNumber("101");
+        room.setCapacity(4);
+        room.setOccupiedBeds(2);
+
+        tenant = new Tenant();
+        tenant.setId(1L);
+        tenant.setName("Arun Kumar");
+        tenant.setPhone("9876543210");
+        tenant.setEmail("arun@gmail.com");
+        tenant.setJoiningDate(LocalDate.of(2026, 8, 1));
+        tenant.setRoom(room);
+    }
+
+
+    // ---------------------------------------------------------
+    // 1. GET ALL TENANTS
+    // ---------------------------------------------------------
+
+    @Test
+    void getAllTenants_ShouldReturnAllTenants() throws Exception {
+
+        when(tenantService.getAllTenants())
+                .thenReturn(List.of(tenant));
+
+        mockMvc.perform(
+                get("/api/tenants")
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].name")
+                .value("Arun Kumar"))
+        .andExpect(jsonPath("$[0].phone")
+                .value("9876543210"));
+
+        verify(tenantService).getAllTenants();
+    }
+
+
+    // ---------------------------------------------------------
+    // 2. GET TENANT BY ID
+    // ---------------------------------------------------------
+
+    @Test
+    void getTenantById_ShouldReturnTenant() throws Exception {
+
+        when(tenantService.getTenantById(1L))
+                .thenReturn(tenant);
+
+        mockMvc.perform(
+                get("/api/tenants/1")
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(1))
+        .andExpect(jsonPath("$.name")
+                .value("Arun Kumar"))
+        .andExpect(jsonPath("$.email")
+                .value("arun@gmail.com"));
+
+        verify(tenantService)
+                .getTenantById(1L);
+    }
+
+
+    // ---------------------------------------------------------
+    // 3. CREATE TENANT
+    // ---------------------------------------------------------
+
+    @Test
+    void createTenant_ShouldCreateTenant() throws Exception {
+
+        when(tenantService.saveTenant(any(Tenant.class)))
+                .thenReturn(tenant);
+
+        mockMvc.perform(
+                post("/api/tenants")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tenant))
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(1))
+        .andExpect(jsonPath("$.name")
+                .value("Arun Kumar"))
+        .andExpect(jsonPath("$.phone")
+                .value("9876543210"))
+        .andExpect(jsonPath("$.email")
+                .value("arun@gmail.com"));
+
+        verify(tenantService)
+                .saveTenant(any(Tenant.class));
+    }
+
+
+    // ---------------------------------------------------------
+    // 4. UPDATE TENANT
+    // ---------------------------------------------------------
+
+    @Test
+    void updateTenant_ShouldUpdateTenant() throws Exception {
+
+        Tenant updatedTenant = tenant;
+
+        updatedTenant.setName("Arun Kumar Updated");
+
+        when(tenantService.updateTenant(
+                any(Long.class),
+                any(Tenant.class)))
+                .thenReturn(updatedTenant);
+
+        mockMvc.perform(
+                put("/api/tenants/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                updatedTenant))
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name")
+                .value("Arun Kumar Updated"));
+
+        verify(tenantService)
+                .updateTenant(
+                        any(Long.class),
+                        any(Tenant.class));
+    }
+
+
+    // ---------------------------------------------------------
+    // 5. DELETE TENANT
+    // ---------------------------------------------------------
+
+    @Test
+    void deleteTenant_ShouldDeleteTenant() throws Exception {
+
+        doNothing()
+                .when(tenantService)
+                .deleteTenant(1L);
+
+        mockMvc.perform(
+                delete("/api/tenants/1")
+        )
+        .andExpect(status().isOk())
+        .andExpect(
+                jsonPath("$")
+                        .value("Tenant deleted successfully")
+        );
+
+        verify(tenantService)
+                .deleteTenant(1L);
+    }
+
+
+    // ---------------------------------------------------------
+    // 6. SEARCH TENANTS
+    // ---------------------------------------------------------
+
+    @Test
+    void searchTenants_ShouldReturnMatchingTenants()
+            throws Exception {
+
+        when(tenantService.searchTenantsByName("Arun"))
+                .thenReturn(List.of(tenant));
+
+        mockMvc.perform(
+                get("/api/tenants/search")
+                        .param("name", "Arun")
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].name")
+                .value("Arun Kumar"));
+
+        verify(tenantService)
+                .searchTenantsByName("Arun");
+    }
+
+
+    // ---------------------------------------------------------
+    // 7. VALIDATION FAILURE
+    // ---------------------------------------------------------
+
+    @Test
+    void createTenant_WhenRequiredFieldsMissing_ShouldReturnBadRequest()
+            throws Exception {
+
+        String invalidTenant = """
+                {
+                    "name": "",
+                    "phone": "",
+                    "email": "",
+                    "room": null
+                }
+                """;
+
+        mockMvc.perform(
+                post("/api/tenants")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidTenant)
+        )
+        .andExpect(status().isBadRequest());
+    }
+}
+

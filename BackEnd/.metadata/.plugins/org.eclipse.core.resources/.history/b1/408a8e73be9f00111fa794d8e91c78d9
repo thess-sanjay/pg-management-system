@@ -1,0 +1,243 @@
+package com.pgms.pgmanagementsystem.service;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.pgms.pgmanagementsystem.dto.RentSummary;
+import com.pgms.pgmanagementsystem.entity.RentRecord;
+import com.pgms.pgmanagementsystem.entity.Tenant;
+import com.pgms.pgmanagementsystem.exception.DuplicateRentException;
+import com.pgms.pgmanagementsystem.exception.RentNotFoundException;
+import com.pgms.pgmanagementsystem.exception.RentValidationException;
+import com.pgms.pgmanagementsystem.exception.TenantNotFoundException;
+import com.pgms.pgmanagementsystem.repository.RentRecordRepository;
+import com.pgms.pgmanagementsystem.repository.TenantRepository;
+
+@Service
+public class RentRecordService {
+
+    private final RentRecordRepository rentRecordRepository;
+    private final TenantRepository tenantRepository;
+
+    public RentRecordService(
+            RentRecordRepository rentRecordRepository,
+            TenantRepository tenantRepository) {
+
+        this.rentRecordRepository = rentRecordRepository;
+        this.tenantRepository = tenantRepository;
+    }
+
+    // Get all rent records
+    public List<RentRecord> getAllRentRecords() {
+        return rentRecordRepository.findAll();
+    }
+
+    // Get paid rent records
+    public List<RentRecord> getPaidRentRecords() {
+        return rentRecordRepository.findByStatus("PAID");
+    }
+
+    // Get pending rent records
+    public List<RentRecord> getPendingRentRecords() {
+        return rentRecordRepository.findByStatus("PENDING");
+    }
+
+    // Get rent history of a tenant
+    public List<RentRecord> getRentRecordsByTenant(Long tenantId) {
+
+        if (!tenantRepository.existsById(tenantId)) {
+            throw new TenantNotFoundException(
+                    "Tenant not found with ID: " + tenantId
+            );
+        }
+
+        return rentRecordRepository.findByTenantId(tenantId);
+    }
+
+
+ // Create rent record
+ public RentRecord saveRentRecord(RentRecord rentRecord) {
+
+     // Check tenant
+     if (rentRecord.getTenant() == null ||
+             rentRecord.getTenant().getId() == null) {
+
+         throw new TenantNotFoundException(
+                 "Tenant ID is required"
+         );
+     }
+
+     Long tenantId = rentRecord.getTenant().getId();
+
+     // Find actual tenant
+     Tenant tenant = tenantRepository.findById(tenantId)
+             .orElseThrow(() -> new TenantNotFoundException(
+                     "Tenant not found with ID: " + tenantId
+             ));
+
+     // Calculate due date automatically
+     if (rentRecord.getDueDate() == null) {
+
+         if (tenant.getJoiningDate() == null) {
+             throw new RentValidationException(
+                     "Tenant joining date is required to calculate due date"
+             );
+         }
+
+         LocalDate joiningDate = tenant.getJoiningDate();
+
+         rentRecord.setDueDate(
+                 joiningDate.plusDays(30)
+         );
+     }
+
+     // Prevent duplicate monthly rent record
+     if (rentRecordRepository.existsByTenantIdAndMonth(
+             tenantId,
+             rentRecord.getMonth())) {
+
+         throw new DuplicateRentException(
+                 "Rent record already exists for tenant ID "
+                 + tenantId + " for " + rentRecord.getMonth()
+         );
+     }
+
+     // Attach actual tenant entity
+     rentRecord.setTenant(tenant);
+
+     return rentRecordRepository.save(rentRecord);
+ }
+
+
+ // Update rent record
+ public RentRecord updateRentRecord(
+         Long id,
+         RentRecord updatedRent) {
+
+     RentRecord existingRent = rentRecordRepository.findById(id)
+             .orElseThrow(() -> new RentNotFoundException(
+                     "Rent record not found with ID: " + id
+             ));
+
+     String status = updatedRent.getStatus();
+
+     if (!"PAID".equalsIgnoreCase(status)
+             && !"PENDING".equalsIgnoreCase(status)) {
+
+         throw new RentValidationException(
+                 "Invalid rent status. Use PAID or PENDING"
+         );
+     }
+
+     // Fix old rent records that don't have a due date
+     if (existingRent.getDueDate() == null
+             && existingRent.getTenant() != null
+             && existingRent.getTenant().getJoiningDate() != null) {
+
+         existingRent.setDueDate(
+                 existingRent.getTenant()
+                         .getJoiningDate()
+                         .plusDays(30)
+         );
+     }
+
+     // Update status
+     existingRent.setStatus(status.toUpperCase());
+
+     // Automatically manage paid date
+     if ("PAID".equalsIgnoreCase(status)) {
+
+         existingRent.setPaidDate(LocalDate.now());
+
+     } else {
+
+         existingRent.setPaidDate(null);
+     }
+
+     return rentRecordRepository.save(existingRent);
+ }
+
+    public RentSummary getMonthlySummary(String month) {
+
+        List<RentRecord> rentRecords =
+                rentRecordRepository.findByMonth(month);
+
+        RentSummary summary = new RentSummary();
+
+        summary.setMonth(month);
+        summary.setTotalTenants(rentRecords.size());
+
+        long paidTenants = rentRecords.stream()
+                .filter(r -> "PAID".equalsIgnoreCase(r.getStatus()))
+                .count();
+        
+        List<String> paidTenantNames = rentRecords.stream()
+                .filter(r -> "PAID".equalsIgnoreCase(r.getStatus()))
+                .map(r -> r.getTenant().getName())
+                .toList();
+
+        long pendingTenants = rentRecords.stream()
+                .filter(r -> "PENDING".equalsIgnoreCase(r.getStatus()))
+                .count();
+        
+        List<String> pendingTenantNames = rentRecords.stream()
+                .filter(r -> "PENDING".equalsIgnoreCase(r.getStatus()))
+                .map(r -> r.getTenant().getName())
+                .toList();
+
+        double totalRentExpected = rentRecords.stream()
+                .mapToDouble(RentRecord::getRentAmount)
+                .sum();
+
+        double totalRentReceived = rentRecords.stream()
+                .filter(r -> "PAID".equalsIgnoreCase(r.getStatus()))
+                .mapToDouble(RentRecord::getRentAmount)
+                .sum();
+
+        double totalOutstanding =
+                totalRentExpected - totalRentReceived;
+
+        summary.setPaidTenants(paidTenants);
+        summary.setPendingTenants(pendingTenants);
+        summary.setTotalRentExpected(totalRentExpected);
+        summary.setTotalRentReceived(totalRentReceived);
+        summary.setTotalOutstanding(totalOutstanding);
+        summary.setPendingTenantNames(pendingTenantNames);
+        summary.setPaidTenantNames(paidTenantNames);
+
+        return summary;
+    }
+    
+    public List<RentRecord> getRentsByStatus(String status) {
+
+        if (!status.equalsIgnoreCase("PAID")
+                && !status.equalsIgnoreCase("PENDING")) {
+
+            throw new IllegalArgumentException(
+                    "Status must be PAID or PENDING"
+            );
+        }
+
+        return rentRecordRepository.findByStatus(
+                status.toUpperCase()
+        );
+    }
+    
+    
+ 
+ // Get overdue rent records
+ public List<RentRecord> getOverdueRentRecords() {
+
+     LocalDate today = LocalDate.now();
+
+     return rentRecordRepository.findByStatus("PENDING")
+             .stream()
+             .filter(rent -> rent.getDueDate() != null
+                     && rent.getDueDate().isBefore(today))
+             .toList();
+ }
+ 
+    
+   }

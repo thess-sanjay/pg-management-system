@@ -1,0 +1,26 @@
+# =========================================
+# DATABASE CONFIGURATION
+# =========================================
+
+spring.datasource.url=jdbc:mysql://localhost:3306/pg_management
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+
+# =========================================
+# JWT CONFIGURATION
+# =========================================
+
+jwt.secret=PGMS_Local_Secret_Key_Change_This
+jwt.expiration=86400000
+
+
+# =========================================
+# SERVER
+# =========================================
+
+server.port=8080

@@ -1,0 +1,5 @@
+package com.pgms.pgmanagementsystem.entity;
+
+public class Activity {
+
+}

@@ -1,0 +1,24 @@
+# =========================================
+# DATABASE CONFIGURATION
+# =========================================
+
+spring.datasource.url=${DATABASE_URL}
+spring.datasource.username=${DATABASE_USERNAME}
+spring.datasource.password=${DATABASE_PASSWORD}
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+
+# =========================================
+# JWT CONFIGURATION
+# =========================================
+
+jwt.secret=${JWT_SECRET:PGMS_Super_Secret_Key_Change_This_In_Production_2026}
+jwt.expiration=${JWT_EXPIRATION:86400000}
+# =========================================
+# SERVER
+# =========================================
+
+server.port=${PORT:8080}

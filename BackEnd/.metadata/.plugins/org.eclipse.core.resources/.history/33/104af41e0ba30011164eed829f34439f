@@ -1,0 +1,5 @@
+package com.pgms.pgmanagementsystem.service;
+
+public class CustomUserDetailsService {
+
+}

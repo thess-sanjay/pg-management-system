@@ -1,0 +1,80 @@
+
+package com.pgms.pgmanagementsystem.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.pgms.pgmanagementsystem.entity.Tenant;
+import com.pgms.pgmanagementsystem.repository.TenantRepository;
+
+@ExtendWith(MockitoExtension.class)
+class TenantServiceTest {
+
+    @Mock
+    private TenantRepository tenantRepository;
+
+    @InjectMocks
+    private TenantService tenantService;
+
+    private Tenant tenant1;
+    private Tenant tenant2;
+
+    @BeforeEach
+    void setUp() {
+
+        tenant1 = new Tenant();
+        tenant1.setId(1L);
+        tenant1.setName("Arun Kumar");
+
+        tenant2 = new Tenant();
+        tenant2.setId(2L);
+        tenant2.setName("Karthik");
+    }
+
+    @Test
+    void getAllTenants_ShouldReturnAllTenants() {
+
+        List<Tenant> tenants =
+                Arrays.asList(tenant1, tenant2);
+
+        when(tenantRepository.findAll())
+                .thenReturn(tenants);
+
+        List<Tenant> result =
+                tenantService.getAllTenants();
+
+        assertEquals(2, result.size());
+        assertEquals("Arun Kumar", result.get(0).getName());
+        assertEquals("Karthik", result.get(1).getName());
+    }
+    
+  
+    		@Test
+    		void searchTenantsByName_ShouldReturnMatchingTenants() {
+
+    		    List<Tenant> tenants =
+    		            Arrays.asList(tenant1);
+
+    		    when(tenantRepository.findByNameContainingIgnoreCase("Arun"))
+    		            .thenReturn(tenants);
+
+    		    List<Tenant> result =
+    		            tenantService.searchTenantsByName("Arun");
+
+    		    assertEquals(1, result.size());
+    		    assertEquals("Arun Kumar", result.get(0).getName());
+    		}
+    	
+
+}
+

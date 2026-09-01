@@ -1,0 +1,5 @@
+package com.pgms.pgmanagementsystem.exception;
+
+public class GlobalExceptionHandlerTest {
+
+}

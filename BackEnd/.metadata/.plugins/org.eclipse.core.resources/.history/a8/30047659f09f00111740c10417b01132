@@ -1,0 +1,215 @@
+package com.pgms.pgmanagementsystem.service;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.pgms.pgmanagementsystem.entity.Room;
+import com.pgms.pgmanagementsystem.repository.RoomRepository;
+import com.pgms.pgmanagementsystem.repository.TenantRepository;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.pgms.pgmanagementsystem.entity.Room;
+import com.pgms.pgmanagementsystem.repository.RoomRepository;
+import com.pgms.pgmanagementsystem.repository.TenantRepository;
+
+@ExtendWith(MockitoExtension.class)
+class RoomServiceTest {
+
+    @Mock
+    private RoomRepository roomRepository;
+
+    @Mock
+    private TenantRepository tenantRepository;
+
+    @InjectMocks
+    private RoomService roomService;
+
+    private Room room1;
+    private Room room2;
+
+    @BeforeEach
+    void setUp() {
+
+        room1 = new Room();
+        room1.setId(1L);
+        room1.setRoomNumber("101");
+        room1.setCapacity(4);
+        room1.setOccupiedBeds(2);
+
+        room2 = new Room();
+        room2.setId(2L);
+        room2.setRoomNumber("102");
+        room2.setCapacity(6);
+        room2.setOccupiedBeds(6);
+    }
+
+    @Test
+    void getAllRooms_ShouldReturnAllRooms() {
+
+        List<Room> rooms =
+                Arrays.asList(room1, room2);
+
+        when(roomRepository.findAll())
+                .thenReturn(rooms);
+
+        List<Room> result =
+                roomService.getAllRooms();
+
+        assertEquals(2, result.size());
+        assertEquals("101", result.get(0).getRoomNumber());
+        assertEquals("102", result.get(1).getRoomNumber());
+    }
+    
+
+    @Test
+    void getFullRooms_ShouldReturnFullRooms() {
+
+        List<Room> rooms =
+                Arrays.asList(room2);
+
+        when(roomRepository.findFullRooms())
+                .thenReturn(rooms);
+
+        List<Room> result =
+                roomService.getFullRooms();
+
+        assertEquals(1, result.size());
+        assertEquals("102", result.get(0).getRoomNumber());
+        assertEquals(6, result.get(0).getOccupiedBeds());
+        assertEquals(6, result.get(0).getCapacity());
+    }
+
+ 
+    @Test
+    void getAvailableRooms_ShouldReturnAvailableRooms() {
+
+        List<Room> rooms =
+                Arrays.asList(room1);
+
+        when(roomRepository.findAvailableRooms())
+                .thenReturn(rooms);
+
+        List<Room> result =
+                roomService.getAvailableRooms();
+
+        assertEquals(1, result.size());
+        assertEquals("101", result.get(0).getRoomNumber());
+        assertEquals(2, result.get(0).getOccupiedBeds());
+    }
+
+    
+
+    @Test
+    void saveRoom_WhenOccupiedBedsExceedCapacity_ShouldThrowException() {
+
+        Room room = new Room();
+        room.setRoomNumber("103");
+        room.setCapacity(4);
+        room.setOccupiedBeds(5);
+
+        org.junit.jupiter.api.Assertions.assertThrows(
+                com.pgms.pgmanagementsystem.exception.RoomValidationException.class,
+                () -> roomService.saveRoom(room)
+        );
+    }
+
+    
+ 
+    @Test
+    void saveRoom_WhenRoomIsValid_ShouldSaveRoom() {
+
+        Room room = new Room();
+        room.setRoomNumber("103");
+        room.setCapacity(4);
+        room.setOccupiedBeds(2);
+
+        when(roomRepository.save(room))
+                .thenReturn(room);
+
+        Room result = roomService.saveRoom(room);
+
+        assertEquals("103", result.getRoomNumber());
+        assertEquals(4, result.getCapacity());
+        assertEquals(2, result.getOccupiedBeds());
+
+        org.mockito.Mockito.verify(roomRepository)
+                .save(room);
+    }
+
+    
+
+    @Test
+    void deleteRoom_WhenRoomHasTenants_ShouldThrowException() {
+
+        Room room = new Room();
+        room.setId(1L);
+        room.setRoomNumber("101");
+        room.setCapacity(4);
+        room.setOccupiedBeds(2);
+
+        when(roomRepository.findById(1L))
+                .thenReturn(java.util.Optional.of(room));
+
+        when(tenantRepository.countByRoomId(1L))
+                .thenReturn(2L);
+
+        org.junit.jupiter.api.Assertions.assertThrows(
+                com.pgms.pgmanagementsystem.exception.RoomHasTenantsException.class,
+                () -> roomService.deleteRoom(1L)
+        );
+
+        org.mockito.Mockito.verify(roomRepository,
+                org.mockito.Mockito.never())
+                .delete(room);
+    }
+ 
+    
+   
+    @Test
+    void deleteRoom_WhenRoomHasNoTenants_ShouldDeleteRoom() {
+
+        Room room = new Room();
+        room.setId(1L);
+        room.setRoomNumber("101");
+        room.setCapacity(4);
+        room.setOccupiedBeds(0);
+
+        when(roomRepository.findById(1L))
+                .thenReturn(java.util.Optional.of(room));
+
+        when(tenantRepository.countByRoomId(1L))
+                .thenReturn(0L);
+
+        roomService.deleteRoom(1L);
+
+        org.mockito.Mockito.verify(roomRepository)
+                .delete(room);
+    }
+   
+
+}
+

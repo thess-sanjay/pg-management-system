@@ -1,0 +1,87 @@
+package com.pgms.pgmanagementsystem.service;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.pgms.pgmanagementsystem.entity.Room;
+import com.pgms.pgmanagementsystem.repository.RoomRepository;
+import com.pgms.pgmanagementsystem.repository.TenantRepository;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.pgms.pgmanagementsystem.entity.Room;
+import com.pgms.pgmanagementsystem.repository.RoomRepository;
+import com.pgms.pgmanagementsystem.repository.TenantRepository;
+
+@ExtendWith(MockitoExtension.class)
+class RoomServiceTest {
+
+    @Mock
+    private RoomRepository roomRepository;
+
+    @Mock
+    private TenantRepository tenantRepository;
+
+    @InjectMocks
+    private RoomService roomService;
+
+    private Room room1;
+    private Room room2;
+
+    @BeforeEach
+    void setUp() {
+
+        room1 = new Room();
+        room1.setId(1L);
+        room1.setRoomNumber("101");
+        room1.setCapacity(4);
+        room1.setOccupiedBeds(2);
+
+        room2 = new Room();
+        room2.setId(2L);
+        room2.setRoomNumber("102");
+        room2.setCapacity(6);
+        room2.setOccupiedBeds(6);
+    }
+
+    @Test
+    void getAllRooms_ShouldReturnAllRooms() {
+
+        List<Room> rooms =
+                Arrays.asList(room1, room2);
+
+        when(roomRepository.findAll())
+                .thenReturn(rooms);
+
+        List<Room> result =
+                roomService.getAllRooms();
+
+        assertEquals(2, result.size());
+        assertEquals("101", result.get(0).getRoomNumber());
+        assertEquals("102", result.get(1).getRoomNumber());
+    }
+}
+

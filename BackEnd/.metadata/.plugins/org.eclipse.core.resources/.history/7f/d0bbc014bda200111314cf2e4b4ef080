@@ -1,0 +1,136 @@
+package com.pgms.pgmanagementsystem.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.pgms.pgmanagementsystem.entity.Room;
+import com.pgms.pgmanagementsystem.exception.RoomHasTenantsException;
+import com.pgms.pgmanagementsystem.exception.RoomNotFoundException;
+import com.pgms.pgmanagementsystem.exception.RoomValidationException;
+import com.pgms.pgmanagementsystem.repository.RoomRepository;
+import com.pgms.pgmanagementsystem.repository.TenantRepository;
+
+@Service
+public class RoomService {
+
+	private final RoomRepository roomRepository;
+	private final TenantRepository tenantRepository;
+
+    // Constructor
+	public RoomService(
+	        RoomRepository roomRepository,
+	        TenantRepository tenantRepository) {
+
+	    this.roomRepository = roomRepository;
+	    this.tenantRepository = tenantRepository;
+	}
+
+    // Get all rooms
+    public List<Room> getAllRooms() {
+        return roomRepository.findAll();
+    }
+
+    // Get rooms with available beds
+    public List<Room> getAvailableRooms() {
+        return roomRepository.findAvailableRooms();
+    }
+
+    // Get rooms that are full
+    public List<Room> getFullRooms() {
+        return roomRepository.findFullRooms();
+    }
+
+    // Create a room
+    public Room saveRoom(Room room) {
+
+        if (room.getCapacity() <= 0) {
+            throw new RoomValidationException(
+                    "Room capacity must be greater than 0"
+            );
+        }
+
+        // A newly created room starts with zero occupied beds.
+        room.setOccupiedBeds(0);
+
+        return roomRepository.save(room);
+    }
+
+    // Get room by ID
+    public Room getRoomById(Long id) {
+
+        return roomRepository.findById(id)
+                .orElseThrow(() -> new RoomNotFoundException(
+                        "Room not found with ID: " + id
+                ));
+    }
+
+    public Room updateRoom(Long id, Room updatedRoom) {
+
+        Room existingRoom = roomRepository.findById(id)
+                .orElseThrow(() -> new RoomNotFoundException(
+                        "Room not found with ID: " + id
+                ));
+
+        if (updatedRoom.getRoomNumber() == null ||
+            updatedRoom.getRoomNumber().trim().isEmpty()) {
+
+            throw new RoomValidationException(
+                    "Room number is required"
+            );
+        }
+
+        if (updatedRoom.getCapacity() <= 0) {
+
+            throw new RoomValidationException(
+                    "Room capacity must be greater than 0"
+            );
+        }
+
+        // Don't allow capacity to become smaller
+        // than the number of currently occupied beds.
+        if (updatedRoom.getCapacity() < existingRoom.getOccupiedBeds()) {
+
+            throw new RoomValidationException(
+                    "Room capacity cannot be less than currently occupied beds"
+            );
+        }
+
+        existingRoom.setRoomNumber(
+                updatedRoom.getRoomNumber().trim()
+        );
+
+        existingRoom.setCapacity(
+                updatedRoom.getCapacity()
+        );
+
+        // IMPORTANT:
+        // Do NOT update occupiedBeds here.
+        // It should remain based on tenant occupancy.
+
+        return roomRepository.save(existingRoom);
+    }
+
+    // Delete room
+    public void deleteRoom(Long id) {
+
+        Room existingRoom = roomRepository.findById(id)
+                .orElseThrow(() -> new RoomNotFoundException(
+                        "Room not found with ID: " + id
+                ));
+
+        long tenantCount = tenantRepository.countByRoomId(id);
+
+        if (tenantCount > 0) {
+            throw new RoomHasTenantsException(
+                    "Cannot delete room " + existingRoom.getRoomNumber()
+                    + " because it has " + tenantCount + " tenant(s)"
+            );
+        }
+
+        roomRepository.delete(existingRoom);
+    }
+    
+
+
+}
